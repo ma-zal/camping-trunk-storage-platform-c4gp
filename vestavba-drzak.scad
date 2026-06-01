@@ -23,7 +23,7 @@ rib_wall = wall;  // tloušťka stěny (rámu) duté výztuhy
 tongue_w = 60;       // šířka jazýčku
 tongue_thick = 4;    // tloušťka stěny jazýčku (v ose Z)
 tongue_depth = 10;   // hloubka jazýčku (jak daleko směřuje dolů, osa Y)
-tongue_round = 1.8;  // poloměr zaoblení koncových hran jazýčku
+tongue_round = 5;  // poloměr zaoblení koncových hran jazýčku
 
 // ---------- Odvozené vnější rozměry ----------
 outer_x = inner_x + 2 * wall;   // 25.6 mm
