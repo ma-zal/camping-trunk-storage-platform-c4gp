@@ -81,29 +81,25 @@ module top_base() {
 }
 
 // ---------------------------------------------------------------------
-//  Boční výztuhy – duté trojúhelníkové výztuhy (jen rám, ne plná výplň),
-//  které rozšiřují základnu a plynule navazují k hornímu rohu tunelu.
-//  Svah vede od hrany základny až ke spodnímu konci delší strany.
-//  Hloubka rib_depth, tloušťka rámu rib_wall.
+//  Boční výztuhy – jedna šikmá deska (úhlopříčka původního trojúhelníku)
+//  napříč od hrany základny dolů k patě tunelu. Členy podél základny ani
+//  podél tunelu nejsou potřeba. Vnější hrana desky lícuje s úhlopříčkou
+//  (roh základny → pata tunelu), tloušťka jde dovnitř k tunelu, takže
+//  deska nepřečnívá za základnu. Tloušťka rib_wall, hloubka rib_depth.
 // ---------------------------------------------------------------------
 module side_ribs() {
-    rib_height = outer_y;   // 49.6 mm (až dolů)
-
-    tri = [
-        [outer_x / 2, outer_y],                // horní roh tunelu
-        [base_w / 2,  outer_y],                // hrana základny
-        [outer_x / 2, outer_y - rib_height],   // svah k patě tunelu
-    ];
+    p_top = [base_w / 2,  outer_y];   // horní vnější roh (hrana základny)
+    p_bot = [outer_x / 2, 0];         // dolní vnější roh (pata tunelu)
 
     for (mx = [1, -1]) {              // pravá (+X) a levá (-X) strana
         scale([mx, 1, 1])
         linear_extrude(height = rib_depth)
-            difference() {
-                polygon(points = tri);
-                // odebráním zmenšeného trojúhelníku zůstane jen rám (dutý)
-                offset(delta = -rib_wall)
-                    polygon(points = tri);
-            }
+            polygon(points = [
+                p_top,                  // horní vnější (roh základny)
+                p_bot,                  // dolní vnější (pata tunelu)
+                p_bot - [rib_wall, 0],  // dolní vnitřní (k tunelu)
+                p_top - [rib_wall, 0],  // horní vnitřní
+            ]);
     }
 }
 
