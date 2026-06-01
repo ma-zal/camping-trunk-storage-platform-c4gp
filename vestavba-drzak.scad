@@ -10,13 +10,13 @@
 // ---------- Parametry profilu a nasunutí ----------
 inner_x = 19.6;   // vnitřní šířka tunelu (kratší strana profilu + vůle)
 inner_y = 43.6;   // vnitřní výška tunelu (delší strana profilu + vůle)
-insert_len = 20;  // délka nasouvací části (hloubka tunelu v ose Z)
+insert_len = 30;  // délka nasouvací části (hloubka tunelu v ose Z)
 wall = 3;         // tloušťka pláště
 
 // ---------- Parametry základny a výztuh ----------
 base_w = 60;      // celková šířka základny (shodná se šířkou jazýčku)
-base_t = wall;    // tloušťka horní desky základny
-rib_depth = 10;   // hloubka bočních výztuh v ose Z (není potřeba celých 20)
+base_t = 0; // wall;    // tloušťka horní desky základny // 0 = vynechana,
+rib_depth = 20;   // hloubka bočních výztuh v ose Z (není potřeba celých 20)
 
 // ---------- Parametry jazýčku (háčku) ----------
 tongue_w = 60;       // šířka jazýčku
@@ -75,8 +75,8 @@ module insert_tunnel() {
 //  viset směrem od modelu pryč (mimo těleso).
 // ---------------------------------------------------------------------
 module top_base() {
-    translate([-base_w / 2, outer_y, -tongue_thick])
-        cube([base_w, base_t, insert_len + tongue_thick]);
+    translate([-base_w / 2, outer_y, 0])
+        cube([base_w, base_t, rib_depth]);
 }
 
 // ---------------------------------------------------------------------
@@ -84,9 +84,9 @@ module top_base() {
 //  a plynule navazují směrem k horní části nasunu. Hloubka rib_depth.
 // ---------------------------------------------------------------------
 module side_ribs() {
-    // Výška svahu výztuhy – pro plynulý přechod (cca 45°) od hrany
-    // základny dolů k boku tunelu.
-    rib_height = base_w / 2 - outer_x / 2;   // 17.2 mm
+    // Výška svahu výztuhy – svah vede od hrany základny až ke spodnímu
+    // konci delší strany (k patě profilu), tedy přes celou výšku tělesa.
+    rib_height = outer_y;   // 49.6 mm (až dolů)
 
     for (mx = [1, -1]) {              // pravá (+X) a levá (-X) strana
         scale([mx, 1, 1])
@@ -107,25 +107,29 @@ module side_ribs() {
 // ---------------------------------------------------------------------
 module tongue() {
     // Spodní hrana jazýčku (kam až sahá směrem dolů)
-    y_bottom = outer_y + base_t - tongue_depth;
+    y_bottom = outer_y + base_t;
 
     // Profil leží v rovině šířka (X) × hloubka (Y) a vytlačí se v ose Z
     // (tloušťka). Tím se zaoblí koncové hrany běžící napříč tloušťkou.
-    translate([0, y_bottom, -tongue_thick])
+    translate([0, y_bottom, 0])
         linear_extrude(height = tongue_thick)
             tongue_profile();
 }
 
 // 2D profil jazýčku v rovině (X = šířka, Y = hloubka).
-// Zaoblené rohy (koncové hrany) se vytvoří obalením (hull) čtyř kruhů.
+// Zaoblené jsou jen dva vnější rohy (hrany mířící ven, y = d);
+// strana přiléhající k držáku (y = 0) zůstává ostrá.
 module tongue_profile() {
     w = tongue_w;
     d = tongue_depth;
     r = tongue_round;
 
     hull() {
-        for (x = [-w / 2 + r, w / 2 - r], y = [r, d - r])
-            translate([x, y]) circle(r = r);
+        // tělo s ostrou hranou u držáku
+        translate([-w / 2, 0]) square([w, d - r]);
+        // zaoblené vnější rohy
+        translate([-w / 2 + r, d - r]) circle(r = r);
+        translate([ w / 2 - r, d - r]) circle(r = r);
     }
 }
 
