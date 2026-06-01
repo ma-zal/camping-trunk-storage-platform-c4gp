@@ -15,8 +15,9 @@ wall = 3;         // tloušťka pláště
 
 // ---------- Parametry základny a výztuh ----------
 base_w = 60;      // celková šířka základny (shodná se šířkou jazýčku)
-base_t = 0; // wall;    // tloušťka horní desky základny // 0 = vynechana,
+base_t = wall;    // tloušťka horní desky základny (zapuštěná do horní stěny tunelu)
 rib_depth = 20;   // hloubka bočních výztuh v ose Z (není potřeba celých 20)
+rib_wall = wall;  // tloušťka stěny (rámu) duté výztuhy
 
 // ---------- Parametry jazýčku (háčku) ----------
 tongue_w = 60;       // šířka jazýčku
@@ -35,7 +36,7 @@ $fn = 48;
 // Model je v ose Y posunutý nahoru (Y ≈ 0–53), proto kamera míří na jeho
 // střed, ne na počátek [0,0,0].
 $vpt = [0, 20, 10];     // bod, na který se kamera dívá (střed modelu)
-$vpr = [60, 0, 25];    // rotace pohledu (sklon a natočení)
+$vpr = [60, 0, 135];    // rotace pohledu (sklon a natočení)
 $vpd = 200;            // vzdálenost kamery (zoom)
 
 // =====================================================================
@@ -69,33 +70,40 @@ module insert_tunnel() {
 }
 
 // ---------------------------------------------------------------------
-//  Horní základna – plochá deska 60 mm široká přes horní stranu tunelu
-//  Drží profil na středu, aby se nepřeklápěl na žádnou stranu.
-//  Vepředu přečnívá o tloušťku jazýčku (přesah), aby z ní mohl jazýček
-//  viset směrem od modelu pryč (mimo těleso).
+//  Horní základna – plochá deska 60 mm široká přes horní stranu tunelu.
+//  Je zapuštěná do horní stěny tunelu (horní plocha v rovině outer_y),
+//  takže nad tunelem nevzniká dvojitá tloušťka – přes šířku tunelu se
+//  jen překryje s jeho stěnou, navíc rozšiřuje horní plochu do stran.
 // ---------------------------------------------------------------------
 module top_base() {
-    translate([-base_w / 2, outer_y, 0])
+    translate([-base_w / 2, outer_y - base_t, 0])
         cube([base_w, base_t, rib_depth]);
 }
 
 // ---------------------------------------------------------------------
-//  Boční výztuhy – plné trojúhelníkové výztuhy, které rozšiřují základnu
-//  a plynule navazují směrem k horní části nasunu. Hloubka rib_depth.
+//  Boční výztuhy – duté trojúhelníkové výztuhy (jen rám, ne plná výplň),
+//  které rozšiřují základnu a plynule navazují k hornímu rohu tunelu.
+//  Svah vede od hrany základny až ke spodnímu konci delší strany.
+//  Hloubka rib_depth, tloušťka rámu rib_wall.
 // ---------------------------------------------------------------------
 module side_ribs() {
-    // Výška svahu výztuhy – svah vede od hrany základny až ke spodnímu
-    // konci delší strany (k patě profilu), tedy přes celou výšku tělesa.
     rib_height = outer_y;   // 49.6 mm (až dolů)
+
+    tri = [
+        [outer_x / 2, outer_y],                // horní roh tunelu
+        [base_w / 2,  outer_y],                // hrana základny
+        [outer_x / 2, outer_y - rib_height],   // svah k patě tunelu
+    ];
 
     for (mx = [1, -1]) {              // pravá (+X) a levá (-X) strana
         scale([mx, 1, 1])
         linear_extrude(height = rib_depth)
-            polygon(points = [
-                [outer_x / 2, outer_y],                // horní roh tunelu
-                [base_w / 2,  outer_y],                // hrana základny
-                [outer_x / 2, outer_y - rib_height],   // svah k boku tunelu
-            ]);
+            difference() {
+                polygon(points = tri);
+                // odebráním zmenšeného trojúhelníku zůstane jen rám (dutý)
+                offset(delta = -rib_wall)
+                    polygon(points = tri);
+            }
     }
 }
 
@@ -106,8 +114,8 @@ module side_ribs() {
 //  Zapadne do vodorovného otvoru a zajistí profil proti vysunutí.
 // ---------------------------------------------------------------------
 module tongue() {
-    // Spodní hrana jazýčku (kam až sahá směrem dolů)
-    y_bottom = outer_y + base_t;
+    // Jazýček vychází z horní plochy (rovina outer_y)
+    y_bottom = outer_y;
 
     // Profil leží v rovině šířka (X) × hloubka (Y) a vytlačí se v ose Z
     // (tloušťka). Tím se zaoblí koncové hrany běžící napříč tloušťkou.
