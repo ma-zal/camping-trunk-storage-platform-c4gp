@@ -7,21 +7,23 @@
 //    Z = směr nasunutí profilu (tunel je v ose Z průchozí)
 // =====================================================================
 
+is_poc = false; // Mene hlubsi varianta, na vyzkouseni
+
 // ---------- Parametry profilu a nasunutí ----------
-inner_x = 19.6;   // vnitřní šířka tunelu (kratší strana profilu + vůle)
-inner_y = 43.6;   // vnitřní výška tunelu (delší strana profilu + vůle)
-insert_len = 30;  // délka nasouvací části (hloubka tunelu v ose Z)
-wall = 3;         // tloušťka pláště
+inner_x = 19.2;   // vnitřní šířka tunelu (kratší strana profilu + vůle)
+inner_y = 43.2;   // vnitřní výška tunelu (delší strana profilu + vůle)
+insert_len = is_poc ? 15 : 30;  // délka nasouvací části (hloubka tunelu v ose Z)
+wall = 2;         // tloušťka pláště
 
 // ---------- Parametry základny a výztuh ----------
 base_w = 60;      // celková šířka základny (shodná se šířkou jazýčku)
 base_t = wall;    // tloušťka horní desky základny (zapuštěná do horní stěny tunelu)
-rib_depth = 20;   // hloubka bočních výztuh v ose Z (není potřeba celých 20)
+rib_depth = is_poc ? 15 : 20;   // hloubka bočních výztuh v ose Z (není potřeba celých 20)
 rib_wall = wall;  // tloušťka stěny (rámu) duté výztuhy
 
 // ---------- Parametry jazýčku (háčku) ----------
 tongue_w = 60;       // šířka jazýčku
-tongue_thick = 4;    // tloušťka stěny jazýčku (v ose Z)
+tongue_thick = 2;    // tloušťka stěny jazýčku (v ose Z)
 tongue_depth = 10;   // hloubka jazýčku (jak daleko směřuje dolů, osa Y)
 tongue_round = 5;  // poloměr zaoblení koncových hran jazýčku
 
