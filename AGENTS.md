@@ -1,37 +1,22 @@
-OpenSCAD projekt
+OpenSCAD projekt – držáky dřevěného profilu pro vestavbu.
 
-Cil
+Rozměry a odvozené hodnoty jsou parametry na začátku každého `.scad` souboru. Sem patří jen účel a záměry, které z kódu nejsou na první pohled zřejmé.
 
-Nasuvny drzak na dreveny profil 19x43 mm.
-Na druzaku bude dole smerujici jazycek (hacek), ktery zapadne do vodorovneho otvoru a zajisti, aby se profil neposouval mimo otvor.
+## Přední držák
 
-Rozmery a orientace
+Soubor: `vestavba-drzak-predni.scad`
 
-Vnitrni rozmery nasunu pro profil: 19.6 mm x 43.6 mm.
-Delka nasouvaci casti: 20 mm.
-Tloustka plaste: 3 mm.
+Účel: nasouvací držák na vodorovný dřevěný profil (vyšší stranou nahoru). Jazýček zapadne do vodorovného úzkém otvoru v automobilu (kterým se vysouvá bezpečnostní pás) a zajistí profil proti vysunutí.
 
-Profil je vodorovne, vyssi stranou nahoru (43 mm jako vyska prurezu).
+Hlavní prvky a záměry:
+- Průchozí obdélníkový tunel, otevřený na obou koncích (profil jím prochází).
+- Jazýček (háček) na horní straně míří ven od těla a dolů do otvoru. Zaoblený je jen na svých dvou vnějších hranách, strana u těla zůstává ostrá.
+- Horní základna rozšiřuje horní plochu do stran a drží profil na středu (proti překlápění). Je zapuštěná do horní stěny tunelu, aby nahoře nevznikala dvojitá tloušťka materiálu.
+- Boční výztuhy: jen jedna šikmá deska na každé straně (úhlopříčka od hrany základny k patě tunelu), jejíž vnější hrana lícuje se základnou a nepřečnívá. Záměrně žádný plný ani dutý trojúhelník a žádné členy podél základny či tunelu.
+- Volitelný otvor na šroubek skrz horní stěnu tunelu.
 
-Nasouvaci cast musi byt pruchozi (obdelnikovy tunel), tedy otevrena na obou stranach.
+`is_poc = true` přepíná na mělčí zkušební variantu (pro rychlejší vytištění).
 
-Jazycek (hacek)
+## Zadní držák
 
-Otvor, do ktereho jazycek zapada, ma sirku cca 60 mm (je o neco sirsi nez jazycek).
-Sirka jazycku: 60 mm.
-Tloustka jazycku (stena): 4 mm.
-Hloubka jazycku: 10 mm.
-
-Jazycek je na horni strane nasunu a smeruje dolu do otvoru.
-Zaobleni je zatim potreba jen na jazycku, dalsi zaobleni neni nutne.
-
-Zakladna a zpevneni
-
-Celkova sirka zakladny: 60 mm (stejne jako jazycek).
-Zakladna ma drzet profil na stredu, aby se nepreklapel ani na jednu stranu.
-
-Pro zpevneni ma mit rozsirenou zakladnu z boku plne vystuhy.
-Vystuhy plynule navazuji smerem k horni casti nasunu.
-Hloubka vystuh: 10 mm (neni potreba celych 20 mm).
-
-Kod je v souboru `vestavba-drzak.scad` a je rozdelen do funkci pro lepsi prehlednost a modifikovatelnost.
+TODO later
