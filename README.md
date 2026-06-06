@@ -10,6 +10,8 @@ Rozměry a odvozené hodnoty jsou parametry na začátku každého `.scad` soubo
 
 ## Přední držák
 
+![Přední držák](img/drzak-predni.png)
+
 Soubor: `vestavba-drzak-predni.scad`
 
 Účel: nasouvací držák na vodorovný dřevěný profil (vyšší stranou nahoru). Jazýček zapadne do vodorovného úzkém otvoru v automobilu (kterým se vysouvá bezpečnostní pás) a zajistí profil proti vysunutí.
@@ -26,6 +28,10 @@ Hlavní prvky a záměry:
 `is_poc = true` přepíná na mělčí zkušební variantu (pro rychlejší vytištění).
 
 ## Zadní díl - přítlačná podložka
+
+![Zadní díl – pohled zespodu na lůžko oka](img/drzak-zadni-zespodu.png)
+
+*Pohled zespodu – na spodní (dosedací) straně je vidět konkávní lůžko (drážka) kopírující prut oka ve tvaru „U".*
 
 Soubor: `vestavba-drzak-zadni.scad`
 
