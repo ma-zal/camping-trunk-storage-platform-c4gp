@@ -10,19 +10,19 @@
 is_poc = false; // Mene hlubsi varianta, na vyzkouseni
 
 // ---------- Parametry profilu a nasunutí ----------
-inner_x = 19.2;   // vnitřní šířka tunelu (kratší strana profilu + vůle)
+inner_x = 19;   // vnitřní šířka tunelu (kratší strana profilu + vůle)
 inner_y = 43.2;   // vnitřní výška tunelu (delší strana profilu + vůle)
 insert_len = is_poc ? 15 : 30;  // délka nasouvací části (hloubka tunelu v ose Z)
 wall = 2;         // tloušťka pláště
 
 // ---------- Parametry základny a výztuh ----------
-base_w = 60;      // celková šířka základny (shodná se šířkou jazýčku)
+base_w = 65;      // celková šířka základny (shodná se šířkou jazýčku)
 base_t = wall;    // tloušťka horní desky základny (zapuštěná do horní stěny tunelu)
-rib_depth = is_poc ? 15 : 20;   // hloubka bočních výztuh v ose Z (není potřeba celých 20)
+rib_depth = is_poc ? 15 : 18;   // vyska bočních výztuh v ose Z (není potřeba celých 20)
 rib_wall = wall;  // tloušťka stěny (rámu) duté výztuhy
 
 // ---------- Parametry jazýčku (háčku) ----------
-tongue_w = 60;       // šířka jazýčku
+tongue_w = base_w;       // šířka jazýčku
 tongue_thick = 2;    // tloušťka stěny jazýčku (v ose Z)
 tongue_depth = 10;   // hloubka jazýčku (jak daleko směřuje dolů, osa Y)
 tongue_round = 5;  // poloměr zaoblení koncových hran jazýčku
@@ -37,7 +37,7 @@ $fn = 48;
 // ---------- Výchozí pohled kamery (aby model nebyl mimo záběr) ----------
 // Model je v ose Y posunutý nahoru (Y ≈ 0–53), proto kamera míří na jeho
 // střed, ne na počátek [0,0,0].
-$vpt = [0, 20, 10];     // bod, na který se kamera dívá (střed modelu)
+$vpt = [0, 25, 10];     // bod, na který se kamera dívá (střed modelu)
 $vpr = [60, 0, 135];    // rotace pohledu (sklon a natočení)
 $vpd = 200;            // vzdálenost kamery (zoom)
 
@@ -45,15 +45,36 @@ $vpd = 200;            // vzdálenost kamery (zoom)
 //  Hlavní sestava
 // =====================================================================
 module drzak() {
-    union() {
-        // Nasouvací tunel (s průchozím otvorem)
-        insert_tunnel();
+    difference() {
+        union() {
+            // Nasouvací tunel (s průchozím otvorem)
+            insert_tunnel();
 
-        // Horní základna + boční výztuhy + jazýček
-        top_base();
-        side_ribs();
-        tongue();
+            // Horní základna + boční výztuhy + jazýček
+            top_base();
+            side_ribs();
+            tongue();
+        }
+
+        // Otvor na šroubek v horní (kratší) stěně tunelu
+        if (!is_poc) { // pro zkoušku není potřeba, navíc by se špatně vrtalo
+            screw_hole();
+        }
     }
+}
+
+// ---------------------------------------------------------------------
+//  Otvor na šroubek – svislý (osa Y) skrz horní stěnu tunelu na straně
+//  jazýčku. Vystředěný na X = 0, v ose Z přibližně 10 mm od zadní hrany
+//  tunelu (Z = 20). Průměr 2.5 mm.
+// ---------------------------------------------------------------------
+module screw_hole() {
+    screw_d = 2.5;
+    screw_z = insert_len - 8;          // poloha v ose Z (hloubka nasunutí)
+
+    translate([0, outer_y + 0.1, screw_z])
+        rotate([90, 0, 0])     // válec z osy Z do osy Y (shora dolů)
+            cylinder(h = 2 * wall + 0.2, d = screw_d);
 }
 
 // ---------------------------------------------------------------------
