@@ -25,8 +25,8 @@ shelf_thickness = 3;    // tloušťka rozsirene casti (lem za drážkou)
 
 // ---------- Parametry oka a jeho drážky ----------
 eye_rod_d   = 6;    // průměr prutu oka ("6mm OKO")
-eye_pitch_inner_d = 29.8; // průměr vnitřní části U – osa prutu
-leg_len     = 11;   // délka rovných nohou U (jak daleko pokračují rovně). Max 15mm.
+eye_pitch_inner_d = 29.4; // průměr vnitřní části U – osa prutu
+leg_len     = 8;   // délka rovných nohou U (jak daleko pokračují rovně). Max 15mm.
 
 eye_pitch_d = eye_pitch_inner_d + eye_rod_d;   // průměr kulaté části U – osa prutu
 
@@ -35,6 +35,7 @@ inner_margin = 0;   // jemný posun svislé stěny (0 = přesně na vnitřní te
 
 // ---------- Otvor na šroub ----------
 screw_d     = 5.2;    // průchozí otvor pro šroub skrz střed
+screw_offset = 10;  // Posun otvoru oproti středu víc ke špičce
 
 // ---------- Odvozené hodnoty ----------
 groove_r   = eye_rod_d / 2;          // poloměr lůžka = 3 mm (rádius z nákresu)
@@ -50,7 +51,7 @@ $fn = 128;
 
 // ---------- Výchozí pohled kamery ----------
 $vpt = [0, 8, 3];
-$vpr = [60, 0, 25];
+$vpr = [110, 0, 25];
 $vpd = 160;
 
 // =====================================================================
@@ -134,7 +135,7 @@ module fillet_leg() {
 //  Bez zaoblení - nepoužito pro maximální pevnost
 // ---------------------------------------------------------------------
 module screw_hole() {
-    translate([0, 0, -eps])
+    translate([0, -screw_offset, -eps])
         cylinder(h = thickness + 2 * eps, d = screw_d);
 }
 
